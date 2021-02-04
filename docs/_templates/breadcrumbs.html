@@ -1,0 +1,24 @@
+
+<nav class="navbar navbar-dark fixed-top bg-dark shadow flex-md-nowrap navbar-expand-md">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ pathto(master_doc) }}">
+            <img width="150px" src="{{ pathto('_static/' + logo, 1) }}" class="logo" alt="{{ _('Logo') }}"/>
+        </a>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation" id="breadcrumb">
+            {% block breadcrumbs %}
+                <ol class="breadcrumb navbar-nav mr-auto" style="margin-right: auto;">
+                    <li class="breadcrumb-item"><a href="{{ pathto(master_doc) }}">Home</a></li>
+                    {% for doc in parents %}
+                      <li class="breadcrumb-item"><a href="{{ doc.link|e }}">{{ doc.title }}</a></li>
+                    {% endfor %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+                </ol>
+            {% endblock %}
+        </nav>
+    </div>
+</div>

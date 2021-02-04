@@ -1,0 +1,140 @@
+{# Support for Sphinx 1.3+ page_source_suffix, but don't break old builds. #}
+
+{% if page_source_suffix %}
+{% set suffix = page_source_suffix %}
+{% else %}
+{% set suffix = source_suffix %}
+{% endif %}
+
+{% if meta is defined and meta is not none %}
+{% set check_meta = True %}
+{% else %}
+{% set check_meta = False %}
+{% endif %}
+
+{% if check_meta and 'github_url' in meta %}
+{% set display_github = True %}
+{% endif %}
+
+{% if check_meta and 'bitbucket_url' in meta %}
+{% set display_bitbucket = True %}
+{% endif %}
+
+{% if check_meta and 'gitlab_url' in meta %}
+{% set display_gitlab = True %}
+{% endif %}
+
+<footer>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 py-4 border-top border-bottom mb-2">
+                <div class="row">
+                    <div class="col-md border-end">
+                        <p><b>Did this page help you?</b><p>
+                        <ul class="list-inline">
+                            <form action="{{ "{% url 'upvote' %}" }}" method="post" class="feedback-form">
+                                {{ "{% csrf_token %}" }}
+                                <input type="hidden" name="title" value="{{ title|striptags|e }}" />
+                                <li class="list-inline-item"><button class="btn btn-outline-secondary" type="submit"><i class="fa fa-thumbs-up">&nbsp;</i> Yes</button></li>
+                            </form>
+                            <form action="{{ "{% url 'downvote' %}" }}" method="post" class="feedback-form">
+                                {{ "{% csrf_token %}" }}
+                              <input type="hidden" name="title" value="{{ title|striptags|e }}" />
+                                <li class="list-inline-item"><button class="btn btn-outline-secondary" type="submit"><i class="fa fa-thumbs-down">&nbsp;</i> No</button></li>
+                            </form>
+                        </ul>
+                          <p class="mt-3 mb-0">
+                            <div> <a href="{{ "{% url 'feedback_index' %}?url={{ request.path}}&title=" }} {{ title|striptags|e }}" class="fa fa-comments"> Provide feedback</a> </div>
+                            <div>
+                            {% if hasdoc(pagename) %}
+                                {% if display_github %}
+                                    {% if check_meta and 'github_url' in meta %}
+                                        <!-- User defined GitHub URL -->
+                                        <a href="{{ meta['github_url'] }}" class="fa fa-github"> {{ _('Edit on GitHub') }}</a>
+                                    {% else %}
+                                        <a href="https://{{ github_host|default("github.com") }}/{{ github_user }}/{{ github_repo }}/{{ theme_vcs_pageview_mode|default("blob") }}/{{ github_version }}{{ conf_py_path }}{{ pagename }}{{ suffix }}" class="fa fa-github"> {{ _('Edit on GitHub') }}</a>
+                                    {% endif %}
+                                {% elif display_bitbucket %}
+                                    {% if check_meta and 'bitbucket_url' in meta %}
+                                        <!-- User defined Bitbucket URL -->
+                                        <a href="{{ meta['bitbucket_url'] }}" class="fa fa-bitbucket"> {{ _('Edit on Bitbucket') }}</a>
+                                    {% else %}
+                                        <a href="https://bitbucket.org/{{ bitbucket_user }}/{{ bitbucket_repo }}/src/{{ bitbucket_version}}{{ conf_py_path }}{{ pagename }}{{ suffix }}?mode={{ theme_vcs_pageview_mode|default("view") }}" class="fa fa-bitbucket"> {{ _('Edit on Bitbucket') }}</a>
+                                    {% endif %}
+                                {% elif display_gitlab %}
+                                    {% if check_meta and 'gitlab_url' in meta %}
+                                        <!-- User defined GitLab URL -->
+                                        <a href="{{ meta['gitlab_url'] }}" class="fa fa-gitlab"> {{ _('Edit on GitLab') }}</a>
+                                    {% else %}
+                                        <a href="https://{{ gitlab_host|default("gitlab.com") }}/{{ gitlab_user }}/{{ gitlab_repo }}/{{ theme_vcs_pageview_mode|default("blob") }}/{{ gitlab_version }}{{ conf_py_path }}{{ pagename }}{{ suffix }}" class="fa fa-gitlab"> {{ _('Edit on GitLab') }}</a>
+                                    {% endif %}
+                                {% elif show_source and source_url_prefix %}
+                                    <a href="{{ source_url_prefix }}{{ pagename }}{{ suffix }}">{{ _('View page source') }}</a>
+                                {% elif show_source and has_source and sourcename %}
+                                    <a href="{{ pathto('_sources/' + sourcename, true)|e }}" rel="nofollow"> {{ _('View page source') }}</a>
+                                {% endif %}
+                            {% endif %}
+                            </div>
+                          </p>
+                        {% if last_updated %}
+                            <div class="lastupdated pt-1"> {% trans last_updated=last_updated|e %}<b>Last updated on:</b> {{ last_updated }}.{% endtrans %} </div>
+                        {% endif  %}
+                        </div>
+                        <div class="col-md">
+                        {% if (theme_prev_next_buttons_location == 'bottom' or theme_prev_next_buttons_location == 'both') and (next or prev) %}
+                            {% if prev %}
+                            <div><b>Previous topic:</b> <a href="{{ prev.link|e }}" title="{{ prev.title|striptags|e }}" accesskey="n" rel="prev">{{ prev.title|striptags|e }}</a></div>
+                            {% endif %}
+                        {% if next %}
+                            <div><b>Next topic:</b> <a href="{{ next.link|e }}" title="{{ next.title|striptags|e }}" accesskey="n" rel="next">{{ next.title|striptags|e }}</a></div>
+                        {% endif %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div role="contentinfo">
+    <p>
+    {%- if show_copyright %}
+        {%- if hasdoc('copyright') %}
+            {% set path = pathto('copyright') %}
+            {% set copyright = copyright|e %}
+            &copy; <a href="{{ path }}">{% trans %}Copyright{% endtrans %}</a> {{ copyright }}
+        {%- else %}
+            {% set copyright = copyright|e %}
+            &copy; {% trans %}Copyright{% endtrans %} {{ copyright }}
+        {%- endif %}
+    {%- endif %}
+
+    {%- if build_id and build_url %}
+    <span class="build">
+        {# Translators: Build is a noun, not a verb #}
+        {% trans %}Build{% endtrans %}
+        <a href="{{ build_url }}">{{ build_id }}</a>.
+    </span>
+    {%- elif commit %}
+    <span class="commit">
+        {# Translators: the phrase "revision" comes from Git, referring to a commit #}
+        {% trans %}Revision{% endtrans %} <code>{{ commit }}</code>.
+    </span>
+    {%- endif %}
+    </p>
+</div>
+
+{%- if show_sphinx %}
+    {% set sphinx_web = '<a href="http://sphinx-doc.org/">Sphinx</a>' %}
+    {% set readthedocs_web = '<a href="https://readthedocs.org">Read the Docs</a>'  %}
+    {# Translators: the variable "sphinx_web" is a link to the Sphinx project documentation with the text "Sphinx" #}
+    {% trans sphinx_web=sphinx_web, readthedocs_web=readthedocs_web %}Built with {{ sphinx_web }} using a{% endtrans %}
+    {# Translators: "theme" refers to a theme for Sphinx, which alters the appearance of the generated documenation #}
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">{% trans %}theme{% endtrans %}</a>
+    {# Translators: this is always used as "provided by Read the Docs", and should not imply Read the Docs is an author of the generated documentation. #}
+    {% trans %}provided by {{ readthedocs_web }}{% endtrans %}.
+{%- endif %}
+
+{%- block extrafooter %} {% endblock %}
+
+</footer>
+

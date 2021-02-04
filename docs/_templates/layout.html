@@ -1,0 +1,33 @@
+{% extends "!layout.html" %}
+
+{% block sidebartitle %}
+    {% include 'searchbox.html' %}
+{% endblock %}
+
+{%- block document %}
+<div class="container-fluid mt-2 rst-content">
+    <div class="row">
+        <div class="col-sm-12 d-md-none d-xs-block">
+            <div class="local-toc">{{ toc }}</div>
+        </div>
+        <div class="col-md-8 col-sm-12">
+            <div itemprop="articleBody">
+                {% block body %}{% endblock %}
+            </div>
+                {% if self.comments()|trim %}
+                    <div class="articleComments">
+                        {% block comments %}{% endblock %}
+                    </div>
+                {% endif%}
+        </div>
+        <div class="col-md-3 small offset-md-1 d-none d-md-block mt-1 my-sidebar position-fixed pl-3 text-muted">
+            <strong class="d-block h6 my-2 pb-2 border-bottom">On this page</strong>
+            <nav class="sidebar-sticky position-sticky"> {{ toc }} </nav>
+        </div>
+    </div>
+</div>
+{%- endblock %}
+{%- block footer %} 
+    <script src="https://getbootstrap.com/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+{% endblock %}
+

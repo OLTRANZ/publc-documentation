@@ -63,11 +63,15 @@ html_theme_options = {
 }
 html_css_files = [
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
-    'default.css',
+    'css/default.css',
 ]
 
-html_favicon = '_static/favicon.png'
-html_logo = '_static/logo-full.png' 
+html_js_files = [
+    'js/requests.js',
+]
+
+html_favicon = '_static/images/favicon.png'
+html_logo = '_static/images/logo-full.png' 
 vcs_pageview_mode = 'edit'
 html_last_updated_fmt = '%b %d, %Y at %H:%M:%S %Z'
 html_show_sphinx = False

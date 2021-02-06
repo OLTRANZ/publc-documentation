@@ -29,5 +29,12 @@
 {%- endblock %}
 {%- block footer %} 
     <script src="https://getbootstrap.com/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script>
+        $('.feedback-form').on('submit', function(event){
+            event.preventDefault();
+            console.log("form submitted!")  // sanity check
+            give_feedback(event);
+        });
+    </script>
 {% endblock %}
 
